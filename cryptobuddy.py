@@ -28,7 +28,30 @@ print("👋 Hey! I’m CryptoBuddy, your AI crypto sidekick! Ask me about trendi
 def get_user_input():
     return input("\nYou: ").lower()
 
+def get_coin_analysis(coin_name):
+    """Analyze a specific cryptocurrency"""
+    coin = coin_name.title()  # Capitalize first letter
+    if coin not in crypto_db:
+        return f"Sorry, I don't have data for {coin}. Try Bitcoin, Ethereum, or Cardano!"
+    
+    data = crypto_db[coin]
+    return f"""
+📊 Analysis for {coin}:
+• Price Trend: {data['price_trend']} {'📈' if data['price_trend'] == 'rising' else '➡️'}
+• Market Cap: {data['market_cap'].upper()} 💰
+• Energy Use: {data['energy_use'].upper()} ⚡
+• Sustainability Score: {int(data['sustainability_score']*10)}/10 🌱
+
+{'🎯 VERDICT: Strong potential! Price is rising and fundamentals look good.' if data['price_trend'] == 'rising' else '🤔 VERDICT: Watch closely. Current trend is stable.'}
+"""
+
 def respond_to_query(query):
+    # Check if query matches any coin name first
+    for coin in crypto_db.keys():
+        if coin.lower() in query.lower():
+            print(get_coin_analysis(coin))
+            return True
+            
     if "sustainable" in query:
         best = max(crypto_db, key=lambda c: crypto_db[c]["sustainability_score"])
         print(f"🌱 CryptoBuddy: Invest in {best}! It’s eco-friendly and has long-term potential.")
